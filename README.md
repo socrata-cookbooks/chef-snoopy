@@ -10,65 +10,71 @@ Snoopy Cookbook
 [codeclimate]: https://codeclimate.com/github/socrata-cookbooks/chef-snoopy
 [coveralls]: https://coveralls.io/r/socrata-cookbooks/chef-snoopy
 
-TODO: Enter the cookbook description here.
+A Chef cookbook for [Snoopy Logger](https://github.com/a2o/snoopy).
 
 Requirements
 ============
 
-TODO: Describe cookbook dependencies.
+This cookbook currently supports Ubuntu only. It intentionally maintains
+backward compatibility with Chef 11, at the expense of some minor additional
+complexity.
 
 Usage
 =====
 
-TODO: Describe how to use the cookbook.
+Either add the `snoopy` default recipe to your node's run_list, or make use of
+the included Chef resources in a recipe of your own.
 
 Recipes
 =======
 
 ***default***
 
-TODO: Describe each component recipe.
+Install Snoopy Logger in an attribute-driven fashion.
 
 Attributes
 ==========
 
 ***default***
 
-TODO: Describe any noteworthy attributes.
+    default['snoopy']['app']['source'] = nil
+
+An optional custom file path or URL to a Snoopy package to install.
 
 Resources
 =========
 
 ***snoopy***
 
-TODO: Describe each included resource.
+The main resource for handling the Snoopy Logger.
 
 Syntax:
 
-    snoopy 'my_resource' do
-        attribute1 'value1'
-        action :create
+    snoopy 'default' do
+        source '/tmp/snoopy.deb'
+        action :install
     end
 
 Actions:
 
-| Action  | Description  |
-|---------|--------------|
-| action1 | Do something |
+| Action     | Description      |
+|------------|------------------|
+| `:install` | Install Snoopy   |
+| `:remove`  | Uninstall Snoopy |
 
 Attributes:
 
-| Attribute  | Default        | Description          |
-|------------|----------------|----------------------|
-| attribute1 | `'some_value'` | Do something         |
-| action     | `:create`      | Action(s) to perform |
+| Attribute | Default    | Description                         |
+|-----------|------------|-------------------------------------|
+| source    | `nil`      | An optional package source path/URL |
+| action    | `:install` | Action(s) to perform                |
 
 Providers
 =========
 
-TODO: Describe each included provider
+***Chef::Provider::Snoopy***
 
-***Chef::Provider::SomeProvider***
+The main provider for managing Snoopy.
 
 Contributing
 ============

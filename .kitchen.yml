@@ -7,9 +7,16 @@ provisioner:
 
 platforms:
   - name: ubuntu-14.04
+  - name: ubuntu-14.04-chef-11
+    driver:
+      box: bento/ubuntu-14.04
+    provisioner:
+      require_chef_omnibus: 11.16.4
 
 suites:
   - name: default
     run_list:
       - recipe[snoopy]
-    attributes:
+  - name: uninstall
+    run_list:
+      - recipe[snoopy_test::uninstall]

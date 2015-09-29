@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 #
 # Cookbook Name:: snoopy
-# Recipe:: default
+# Library:: resource_snoopy
 #
 # Copyright 2015 Socrata, Inc.
 #
@@ -18,6 +18,23 @@
 # limitations under the License.
 #
 
-snoopy 'default' do
-  source node['snoopy']['app']['source']
+require 'chef/resource/lwrp_base'
+require_relative 'provider_snoopy'
+
+class Chef
+  class Resource
+    # A Chef resource for Snoopy Logger.
+    #
+    # @author Jonathan Hartman <jonathan.hartman@socrata.com>
+    class Snoopy < LWRPBase
+      self.resource_name = :snoopy
+      actions :install, :remove
+      default_action :install
+
+      #
+      # Attribute to allow an override of the default package source path/URL.
+      #
+      attribute :source, kind_of: String, default: nil
+    end
+  end
 end

@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 #
 # Cookbook Name:: snoopy
-# Recipe:: default
+# Library:: provider_mapping
 #
 # Copyright 2015 Socrata, Inc.
 #
@@ -18,6 +18,10 @@
 # limitations under the License.
 #
 
-snoopy 'default' do
-  source node['snoopy']['app']['source']
+require 'chef/version'
+require 'chef/platform/provider_mapping'
+require_relative 'provider_snoopy'
+
+if Gem::Version.new(Chef::VERSION) < Gem::Version.new('12')
+  Chef::Platform.set(resource: :snoopy, provider: Chef::Provider::Snoopy)
 end

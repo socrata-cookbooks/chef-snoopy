@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 #
 # Cookbook Name:: snoopy
-# Recipe:: default
+# Library:: matchers
 #
 # Copyright 2015 Socrata, Inc.
 #
@@ -18,6 +18,12 @@
 # limitations under the License.
 #
 
-snoopy 'default' do
-  source node['snoopy']['app']['source']
+if defined?(ChefSpec)
+  ChefSpec.define_matcher(:snoopy)
+
+  [:install, :remove].each do |a|
+    define_method("#{a}_snoopy") do |name|
+      ChefSpec::Matchers::ResourceMatcher.new(:snoopy, a, name)
+    end
+  end
 end

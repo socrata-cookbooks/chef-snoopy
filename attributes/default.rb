@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 #
 # Cookbook Name:: snoopy
-# Recipe:: default
+# Attributes:: default
 #
 # Copyright 2015 Socrata, Inc.
 #
@@ -18,6 +18,4 @@
 # limitations under the License.
 #
 
-snoopy 'default' do
-  source node['snoopy']['app']['source']
-end
+default['snoopy']['app']['source'] = nil
