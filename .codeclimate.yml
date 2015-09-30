@@ -1,0 +1,11 @@
+engines:
+  bundler_audit:
+    enabled: true
+  rubocop:
+    enabled: true
+  foodcritic:
+    enabled: true
+
+ratings:
+  paths:
+    - "**.rb"
