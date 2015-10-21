@@ -44,6 +44,9 @@ class Chef
       # Install the Snoopy Logger and set it up in the linker config.
       #
       action :install do
+        unless new_resource.source
+          packagecloud_repo('socrata-platform/snoopy') { type 'deb' }
+        end
         package(new_resource.source || 'snoopy')
         file '/etc/ld.so.preload' do
           content lazy { ld_so_preload(:add) }
@@ -58,6 +61,10 @@ class Chef
           content lazy { ld_so_preload(:remove) }
         end
         package('snoopy') { action :remove }
+        # For lack of a :remove action in the packagecloud cookbook
+        file('/etc/apt/sources.list.d/socrata-platform_snoopy.list') do
+          action :delete
+        end
       end
 
       #
@@ -74,9 +81,9 @@ class Chef
         libs = ::File.exist?(f) ? ::File.open(f).read.split : []
         case do_action
         when :add
-          (libs << '/lib/snoopy.so').uniq.join("\n")
+          (libs << '/lib/libsnoopy.so').uniq.join("\n")
         when :remove
-          libs.delete_if { |l| l == '/lib/snoopy.so' }.join("\n")
+          libs.delete_if { |l| l == '/lib/libsnoopy.so' }.join("\n")
         else
           fail(Chef::Exceptions::UnsupportedAction, do_action)
         end

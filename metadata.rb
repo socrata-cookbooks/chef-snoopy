@@ -9,5 +9,7 @@ description      'Installs/configures Snoopy Logger'
 long_description 'Installs/configures Snoopy Logger'
 version          '0.1.1'
 
+depends          'packagecloud'
+
 supports         'ubuntu'
 # rubocop:enable SingleSpaceBeforeFirstArg

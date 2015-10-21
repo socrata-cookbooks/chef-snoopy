@@ -12,6 +12,11 @@ Snoopy Cookbook
 
 A Chef cookbook for [Snoopy Logger](https://github.com/a2o/snoopy).
 
+Because there is no Snoopy package easily available for RHEL, and the one for
+Ubuntu 14.04 is extremely old, this cookbook uses newer packages that we
+[build](https://github.com/socrata-platform/snoopy-build) ourselves and store
+in PackageCloud.io.
+
 Requirements
 ============
 

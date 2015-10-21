@@ -5,8 +5,9 @@ require_relative '../../libraries/provider_snoopy'
 
 describe Chef::Provider::Snoopy do
   let(:name) { 'default' }
-  let(:new_resource) { Chef::Resource::Snoopy.new(name, nil) }
-  let(:provider) { described_class.new(new_resource, nil) }
+  let(:run_context) { ChefSpec::SoloRunner.new.converge.run_context }
+  let(:new_resource) { Chef::Resource::Snoopy.new(name, run_context) }
+  let(:provider) { described_class.new(new_resource, run_context) }
 
   describe '.provides?' do
     let(:platform) { nil }
@@ -37,7 +38,7 @@ describe Chef::Provider::Snoopy do
     end
 
     before(:each) do
-      [:package, :file, :ld_so_preload].each do |m|
+      [:packagecloud_repo, :package, :file, :ld_so_preload].each do |m|
         allow_any_instance_of(described_class).to receive(m)
       end
     end
@@ -58,6 +59,14 @@ describe Chef::Provider::Snoopy do
 
       it_behaves_like 'any attribute set'
 
+      it 'adds the Snoopy repository' do
+        p = provider
+        expect(p).to receive(:packagecloud_repo).with('socrata-platform/snoopy')
+          .and_yield
+        expect(p).to receive(:type).with('deb')
+        p.action_install
+      end
+
       it 'installs the default Snoopy package' do
         p = provider
         expect(p).to receive(:package).with('snoopy')
@@ -69,6 +78,12 @@ describe Chef::Provider::Snoopy do
       let(:source) { '/tmp/snoopy' }
 
       it_behaves_like 'any attribute set'
+
+      it 'does not set up the Snoopy repository' do
+        p = provider
+        expect(p).to_not receive(:packagecloud_repo)
+        p.action_install
+      end
 
       it 'installs the custom Snoopy package' do
         p = provider
@@ -87,6 +102,7 @@ describe Chef::Provider::Snoopy do
 
     it 'removes Snoopy from the LD preloads' do
       p = provider
+      allow(p).to receive(:file).and_call_original
       expect(p).to receive(:file).with('/etc/ld.so.preload').and_yield
       expect(p).to receive(:content)
       expect(p).to receive(:lazy).and_yield
@@ -100,12 +116,25 @@ describe Chef::Provider::Snoopy do
       expect(p).to receive(:action).with(:remove)
       p.action_remove
     end
+
+    it 'deletes the Snoopy repository config' do
+      p = provider
+      allow(p).to receive(:file).and_call_original
+      f = '/etc/apt/sources.list.d/socrata-platform_snoopy.list'
+      expect(p).to receive(:file).with(f).and_yield
+      expect(p).to receive(:action).with(:delete)
+      p.action_remove
+    end
   end
 
   describe '#ld_so_preload' do
     let(:action) { nil }
     let(:file_content) { nil }
     let(:res) { provider.ld_so_preload(action) }
+
+    before(:each) do
+      allow(File).to receive(:exist?)
+    end
 
     before(:each) do
       f = '/etc/ld.so.preload'
@@ -121,7 +150,7 @@ describe Chef::Provider::Snoopy do
         let(:file_content) { nil }
 
         it 'returns the correct result string' do
-          expect(res).to eq('/lib/snoopy.so')
+          expect(res).to eq('/lib/libsnoopy.so')
         end
       end
 
@@ -129,7 +158,7 @@ describe Chef::Provider::Snoopy do
         let(:file_content) { '' }
 
         it 'returns the correct result string' do
-          expect(res).to eq('/lib/snoopy.so')
+          expect(res).to eq('/lib/libsnoopy.so')
         end
       end
 
@@ -137,7 +166,7 @@ describe Chef::Provider::Snoopy do
         let(:file_content) { '/lib/test1.so' }
 
         it 'returns the correct result string' do
-          expect(res).to eq("/lib/test1.so\n/lib/snoopy.so")
+          expect(res).to eq("/lib/test1.so\n/lib/libsnoopy.so")
         end
       end
 
@@ -145,15 +174,15 @@ describe Chef::Provider::Snoopy do
         let(:file_content) { "/lib/test1.so\n/lib/test2.so" }
 
         it 'returns the correct result string' do
-          expect(res).to eq("/lib/test1.so\n/lib/test2.so\n/lib/snoopy.so")
+          expect(res).to eq("/lib/test1.so\n/lib/test2.so\n/lib/libsnoopy.so")
         end
       end
 
       context 'a file that already includes snoopy' do
-        let(:file_content) { "/lib/test1.so\n/lib/snoopy.so\n/lib/test2.so" }
+        let(:file_content) { "/lib/test1.so\n/lib/libsnoopy.so\n/lib/test2.so" }
 
         it 'returns the correct result string' do
-          expect(res).to eq("/lib/test1.so\n/lib/snoopy.so\n/lib/test2.so")
+          expect(res).to eq("/lib/test1.so\n/lib/libsnoopy.so\n/lib/test2.so")
         end
       end
     end
@@ -194,7 +223,7 @@ describe Chef::Provider::Snoopy do
       end
 
       context 'a file that already includes snoopy' do
-        let(:file_content) { "/lib/test1.so\n/lib/snoopy.so\n/lib/test2.so" }
+        let(:file_content) { "/lib/test1.so\n/lib/libsnoopy.so\n/lib/test2.so" }
 
         it 'returns the correct result string' do
           expect(res).to eq("/lib/test1.so\n/lib/test2.so")

@@ -11,7 +11,14 @@ describe 'snoopy::app' do
 
   describe file('/etc/ld.so.preload') do
     it 'loads the snoopy lib' do
-      expect(subject.content).to match(%r{^/lib/snoopy\.so$})
+      expect(subject.content).to match(%r{^/lib/libsnoopy\.so$})
+    end
+  end
+
+  describe file('/var/log/auth.log') do
+    it 'is logging system commands' do
+      %x{ls}
+      expect(subject.content).to match(%r{snoopy.*filename:/bin/ls})
     end
   end
 end
