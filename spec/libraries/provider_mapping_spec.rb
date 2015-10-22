@@ -14,6 +14,27 @@ describe :provider_mapping do
       Chef::Resource::Snoopy.new('default', nil)
     )
   end
+  let(:app_provider) do
+    Chef::Platform.find_provider(
+      platform[:platform],
+      platform[:version],
+      Chef::Resource::SnoopyApp.new('default', nil)
+    )
+  end
+  let(:config_provider) do
+    Chef::Platform.find_provider(
+      platform[:platform],
+      platform[:version],
+      Chef::Resource::SnoopyConfig.new('default', nil)
+    )
+  end
+  let(:service_provider) do
+    Chef::Platform.find_provider(
+      platform[:platform],
+      platform[:version],
+      Chef::Resource::SnoopyService.new('default', nil)
+    )
+  end
 
   before(:each) do
     Chef::VERSION.replace(chef_version) unless chef_version.nil?
@@ -46,6 +67,9 @@ describe :provider_mapping do
         load(File.expand_path('../../../libraries/provider_mapping.rb',
                               __FILE__))
         expect(provider).to eq(Chef::Provider::Snoopy)
+        expect(app_provider).to eq(Chef::Provider::SnoopyApp)
+        expect(config_provider).to eq(Chef::Provider::SnoopyConfig)
+        expect(service_provider).to eq(Chef::Provider::SnoopyService)
       end
     end
   end

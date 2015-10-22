@@ -2,11 +2,20 @@
 
 require_relative '../spec_helper'
 require_relative '../../libraries/provider_snoopy'
+require_relative '../../libraries/resource_snoopy'
 
 describe Chef::Provider::Snoopy do
   let(:name) { 'default' }
-  let(:new_resource) { Chef::Resource::Snoopy.new(name, nil) }
-  let(:provider) { described_class.new(new_resource, nil) }
+  let(:source) { nil }
+  let(:config) { nil }
+  let(:run_context) { ChefSpec::SoloRunner.new.converge.run_context }
+  let(:new_resource) do
+    r = Chef::Resource::Snoopy.new(name, run_context)
+    r.source(source) unless source.nil?
+    r.config(config) unless config.nil?
+    r
+  end
+  let(:provider) { described_class.new(new_resource, run_context) }
 
   describe '.provides?' do
     let(:platform) { nil }
@@ -28,186 +37,78 @@ describe Chef::Provider::Snoopy do
     end
   end
 
-  describe '#action_install' do
-    let(:source) { nil }
-    let(:new_resource) do
-      r = super()
-      r.source(source) unless source.nil?
-      r
-    end
-
+  describe '#action_create' do
     before(:each) do
-      [:package, :file, :ld_so_preload].each do |m|
-        allow_any_instance_of(described_class).to receive(m)
+      [:snoopy_app, :snoopy_config, :snoopy_service].each do |r|
+        allow_any_instance_of(described_class).to receive(r)
       end
     end
 
     shared_examples_for 'any attribute set' do
-      it 'adds Snoopy to the LD preloads' do
+      it 'installs Snoopy with the right source' do
         p = provider
-        expect(p).to receive(:file).with('/etc/ld.so.preload').and_yield
-        expect(p).to receive(:content)
-        expect(p).to receive(:lazy).and_yield
-        expect(p).to receive(:ld_so_preload).with(:add)
-        p.action_install
+        expect(p).to receive(:snoopy_app).with(name).and_yield
+        expect(p).to receive(:source).with(source)
+        p.action_create
+      end
+
+      it 'configures Snoopy with the right config' do
+        p = provider
+        expect(p).to receive(:snoopy_config).with(name).and_yield
+        expect(p).to receive(:config).with(config)
+        p.action_create
+      end
+
+      it 'enables Snoopy' do
+        p = provider
+        expect(p).to receive(:snoopy_service).with(name)
+        p.action_create
       end
     end
 
-    context 'no custom source (default)' do
-      let(:source) { nil }
-
+    context 'all default attributes' do
       it_behaves_like 'any attribute set'
-
-      it 'installs the default Snoopy package' do
-        p = provider
-        expect(p).to receive(:package).with('snoopy')
-        p.action_install
-      end
     end
 
-    context 'a custom source' do
-      let(:source) { '/tmp/snoopy' }
+    context 'a source attribute' do
+      let(:source) { 'http://example.com/snoopy.pkg' }
 
       it_behaves_like 'any attribute set'
+    end
 
-      it 'installs the custom Snoopy package' do
-        p = provider
-        expect(p).to receive(:package).with('/tmp/snoopy')
-        p.action_install
-      end
+    context 'a config attribute' do
+      let(:config) { { key: 'value' } }
+
+      it_behaves_like 'any attribute set'
     end
   end
 
   describe '#action_remove' do
     before(:each) do
-      [:file, :ld_so_preload, :package].each do |m|
-        allow_any_instance_of(described_class).to receive(m)
+      [:snoopy_service, :snoopy_config, :snoopy_app].each do |r|
+        allow_any_instance_of(described_class).to receive(r)
       end
     end
 
-    it 'removes Snoopy from the LD preloads' do
+    it 'disables Snoopy' do
       p = provider
-      expect(p).to receive(:file).with('/etc/ld.so.preload').and_yield
-      expect(p).to receive(:content)
-      expect(p).to receive(:lazy).and_yield
-      expect(p).to receive(:ld_so_preload).with(:remove)
+      expect(p).to receive(:snoopy_service).with(name).and_yield
+      expect(p).to receive(:action).with(:disable)
+      p.action_remove
+    end
+
+    it 'removes the Snoopy config' do
+      p = provider
+      expect(p).to receive(:snoopy_config).with(name).and_yield
+      expect(p).to receive(:action).with(:remove)
       p.action_remove
     end
 
     it 'removes the Snoopy package' do
       p = provider
-      expect(p).to receive(:package).with('snoopy').and_yield
+      expect(p).to receive(:snoopy_app).with(name).and_yield
       expect(p).to receive(:action).with(:remove)
       p.action_remove
-    end
-  end
-
-  describe '#ld_so_preload' do
-    let(:action) { nil }
-    let(:file_content) { nil }
-    let(:res) { provider.ld_so_preload(action) }
-
-    before(:each) do
-      f = '/etc/ld.so.preload'
-      allow(File).to receive(:exist?).with(f).and_return(!file_content.nil?)
-      allow(File).to receive(:open).with(f)
-        .and_return(double(read: file_content))
-    end
-
-    context 'an :add action' do
-      let(:action) { :add }
-
-      context 'a non-existent file' do
-        let(:file_content) { nil }
-
-        it 'returns the correct result string' do
-          expect(res).to eq('/lib/snoopy.so')
-        end
-      end
-
-      context 'an empty file' do
-        let(:file_content) { '' }
-
-        it 'returns the correct result string' do
-          expect(res).to eq('/lib/snoopy.so')
-        end
-      end
-
-      context 'a file with a single entry' do
-        let(:file_content) { '/lib/test1.so' }
-
-        it 'returns the correct result string' do
-          expect(res).to eq("/lib/test1.so\n/lib/snoopy.so")
-        end
-      end
-
-      context 'a file with multiple entries' do
-        let(:file_content) { "/lib/test1.so\n/lib/test2.so" }
-
-        it 'returns the correct result string' do
-          expect(res).to eq("/lib/test1.so\n/lib/test2.so\n/lib/snoopy.so")
-        end
-      end
-
-      context 'a file that already includes snoopy' do
-        let(:file_content) { "/lib/test1.so\n/lib/snoopy.so\n/lib/test2.so" }
-
-        it 'returns the correct result string' do
-          expect(res).to eq("/lib/test1.so\n/lib/snoopy.so\n/lib/test2.so")
-        end
-      end
-    end
-
-    context 'a :remove action' do
-      let(:action) { :remove }
-
-      context 'a non-existent file' do
-        let(:file_content) { nil }
-
-        it 'returns the correct result string' do
-          expect(res).to eq('')
-        end
-      end
-
-      context 'an empty file' do
-        let(:file_content) { '' }
-
-        it 'returns the correct result string' do
-          expect(res).to eq('')
-        end
-      end
-
-      context 'a file with a single entry' do
-        let(:file_content) { '/lib/test1.so' }
-
-        it 'returns the correct result string' do
-          expect(res).to eq('/lib/test1.so')
-        end
-      end
-
-      context 'a file with multiple entries' do
-        let(:file_content) { "/lib/test1.so\n/lib/test2.so" }
-
-        it 'returns the correct result string' do
-          expect(res).to eq("/lib/test1.so\n/lib/test2.so")
-        end
-      end
-
-      context 'a file that already includes snoopy' do
-        let(:file_content) { "/lib/test1.so\n/lib/snoopy.so\n/lib/test2.so" }
-
-        it 'returns the correct result string' do
-          expect(res).to eq("/lib/test1.so\n/lib/test2.so")
-        end
-      end
-    end
-
-    context 'an invalid action' do
-      let(:action) { :test }
-
-      it 'raises an error' do
-        expect { res }.to raise_error(Chef::Exceptions::UnsupportedAction)
-      end
     end
   end
 end

@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 #
 # Cookbook Name:: snoopy
-# Library:: provider_mapping
+# Library:: resource_snoopy_service
 #
 # Copyright 2015 Socrata, Inc.
 #
@@ -18,20 +18,17 @@
 # limitations under the License.
 #
 
-require 'chef/version'
-require 'chef/platform/provider_mapping'
-require_relative 'provider_snoopy'
-require_relative 'provider_snoopy_app'
-require_relative 'provider_snoopy_config'
-require_relative 'provider_snoopy_service'
+require 'chef/resource/lwrp_base'
 
-if Gem::Version.new(Chef::VERSION) < Gem::Version.new('12')
-  {
-    snoopy: Chef::Provider::Snoopy,
-    snoopy_app: Chef::Provider::SnoopyApp,
-    snoopy_config: Chef::Provider::SnoopyConfig,
-    snoopy_service: Chef::Provider::SnoopyService
-  }.each do |r, p|
-    Chef::Platform.set(platform: :ubuntu, resource: r, provider: p)
+class Chef
+  class Resource
+    # A Chef resource for the Snoopy service.
+    #
+    # @author Jonathan Hartman <jonathan.hartman@socrata.com>
+    class SnoopyService < LWRPBase
+      self.resource_name = :snoopy_service
+      actions :enable, :disable
+      default_action :enable
+    end
   end
 end

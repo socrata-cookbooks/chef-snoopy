@@ -1,4 +1,10 @@
 language: ruby
+sudo: required
+dist: trusty
+
+branches:
+  only:
+    - master
 
 install:
   - curl -L https://www.chef.io/chef/install.sh | sudo bash -s -- -P chefdk

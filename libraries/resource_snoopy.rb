@@ -19,22 +19,26 @@
 #
 
 require 'chef/resource/lwrp_base'
-require_relative 'provider_snoopy'
 
 class Chef
   class Resource
-    # A Chef resource for Snoopy Logger.
+    # A parent Chef resource for the Snoopy app, config, and service.
     #
     # @author Jonathan Hartman <jonathan.hartman@socrata.com>
     class Snoopy < LWRPBase
       self.resource_name = :snoopy
-      actions :install, :remove
-      default_action :install
+      actions :create, :remove
+      default_action :create
 
       #
       # Attribute to allow an override of the default package source path/URL.
       #
       attribute :source, kind_of: String, default: nil
+
+      #
+      # Attribute to allow a set of configuration overrides.
+      #
+      attribute :config, kind_of: Hash, default: nil
     end
   end
 end

@@ -13,7 +13,11 @@ describe 'snoopy::default' do
 
   context 'default attributes' do
     it 'installs Snoopy with no source' do
-      expect(chef_run).to install_snoopy('default').with(source: nil)
+      expect(chef_run).to create_snoopy('default').with(source: nil)
+    end
+
+    it 'configures Snoopy with no overrides' do
+      expect(chef_run).to create_snoopy('default').with(config: nil)
     end
   end
 
@@ -21,7 +25,16 @@ describe 'snoopy::default' do
     let(:overrides) { { snoopy: { app: { source: '/tmp/snoopy' } } } }
 
     it 'installs Snoopy with the custom source' do
-      expect(chef_run).to install_snoopy('default').with(source: '/tmp/snoopy')
+      expect(chef_run).to create_snoopy('default').with(source: '/tmp/snoopy')
+    end
+  end
+
+  context 'a custom config attribute' do
+    let(:overrides) { { snoopy: { config: { message_format: 'test' } } } }
+
+    it 'configures Snoopy with the custom config' do
+      expect(chef_run).to create_snoopy('default')
+        .with(config: { 'message_format' => 'test' })
     end
   end
 end

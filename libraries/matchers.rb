@@ -19,11 +19,20 @@
 #
 
 if defined?(ChefSpec)
-  ChefSpec.define_matcher(:snoopy)
+  [:snoopy, :snoopy_app, :snoopy_config, :snoopy_service].each do |m|
+    ChefSpec.define_matcher(m)
+  end
 
-  [:install, :remove].each do |a|
-    define_method("#{a}_snoopy") do |name|
-      ChefSpec::Matchers::ResourceMatcher.new(:snoopy, a, name)
+  {
+    snoopy: [:create, :remove],
+    snoopy_app: [:install, :remove],
+    snoopy_config: [:create, :remove],
+    snoopy_service: [:enable, :disable]
+  }.each do |resource, actions|
+    actions.each do |action|
+      define_method("#{action}_#{resource}") do |name|
+        ChefSpec::Matchers::ResourceMatcher.new(resource, action, name)
+      end
     end
   end
 end

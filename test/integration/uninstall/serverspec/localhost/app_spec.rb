@@ -9,9 +9,15 @@ describe 'snoopy::app' do
     end
   end
 
+  describe file('/etc/snoopy.ini') do
+    it 'does not exist' do
+      expect(subject).to_not be_file
+    end
+  end
+
   describe file('/etc/ld.so.preload') do
     it 'does not load the snoopy lib' do
-      expect(subject.content).to_not match(%r{^/lib/snoopy\.so$})
+      expect(subject.content).to_not match(%r{^/lib/libsnoopy\.so$})
     end
   end
 end
