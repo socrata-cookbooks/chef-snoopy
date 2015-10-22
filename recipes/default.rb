@@ -18,7 +18,10 @@
 # limitations under the License.
 #
 
+src = node['snoopy']['app']['source']
+conf = node['snoopy']['config']
+
 snoopy 'default' do
-  source node['snoopy']['app']['source']
-  config node['snoopy']['config']
+  source src unless src.nil?
+  config conf
 end

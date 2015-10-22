@@ -3,6 +3,10 @@ Snoopy Cookbook CHANGELOG
 
 v?.?.? (????-??-??)
 -------------------
+- Default config attribute to an empty hash instead of nil so overrides can be
+  done without worrying about nil reference errors
+- Clear up a Chef nil warning by not passing on a source attribute from the
+  default recipe unless it's non-nil
 
 v1.0.0 (2015-10-22)
 -------------------
