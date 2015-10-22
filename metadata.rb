@@ -7,7 +7,7 @@ maintainer_email 'jonathan.hartman@socrata.com'
 license          'apache2'
 description      'Installs/configures Snoopy Logger'
 long_description 'Installs/configures Snoopy Logger'
-version          '0.1.1'
+version          '1.0.0'
 
 depends          'packagecloud'
 
