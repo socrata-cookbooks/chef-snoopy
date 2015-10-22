@@ -17,7 +17,7 @@ describe 'snoopy::default' do
     end
 
     it 'configures Snoopy with no overrides' do
-      expect(chef_run).to create_snoopy('default').with(config: nil)
+      expect(chef_run).to create_snoopy('default').with(config: {})
     end
   end
 
