@@ -1,7 +1,7 @@
 Snoopy Cookbook CHANGELOG
 =========================
 
-v?.?.? (????-??-??)
+v1.0.1 (2015-10-22)
 -------------------
 - Default config attribute to an empty hash instead of nil so overrides can be
   done without worrying about nil reference errors
