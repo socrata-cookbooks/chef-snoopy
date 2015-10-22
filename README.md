@@ -35,7 +35,8 @@ Recipes
 
 ***default***
 
-Install Snoopy Logger in an attribute-driven fashion.
+Set up the proper package repository; install Snoopy; configure it; and enable
+it on the system, all in an attribute-driven fashion.
 
 Attributes
 ==========
@@ -46,26 +47,58 @@ Attributes
 
 An optional custom file path or URL to a Snoopy package to install.
 
+    default['snoopy']['config'] = nil
+
+An optional hash of config overrides, in underscore format, to pass into
+Snoopy's config.
+
 Resources
 =========
 
 ***snoopy***
 
-The main resource for handling the Snoopy Logger.
+A parent resource that couples an app, config, and service resource together.
 
 Syntax:
 
     snoopy 'default' do
+        source '/tmp/snoopy.deb'
+        config filterchain: 'exclude_uid:0'
+        action :create
+    end
+
+Actions:
+
+| Action    | Description                           |
+|-----------|---------------------------------------|
+| `:create` | Install, configure, and enable Snoopy |
+| `:remove` | Disable and uninstall Snoopy          |
+
+Attributes:
+
+| Attribute | Default    | Description                                 |
+|-----------|------------|---------------------------------------------|
+| source    | `nil`      | An optional package source path/URL         |
+| config    | `nil`      | An optional hash of configuration overrides |
+| action    | `:install` | Action(s) to perform                        |
+
+***snoopy_app***
+
+The resource that manages installation of the Snoopy repo and packages.
+
+Syntax:
+
+    snoopy_app 'default' do
         source '/tmp/snoopy.deb'
         action :install
     end
 
 Actions:
 
-| Action     | Description      |
-|------------|------------------|
-| `:install` | Install Snoopy   |
-| `:remove`  | Uninstall Snoopy |
+| Action     | Description                                       |
+|------------|---------------------------------------------------|
+| `:install` | Enable the custom package repo and install Snoopy |
+| `:remove`  | Uninstall Snoopy and disable the package repo     |
 
 Attributes:
 
@@ -74,12 +107,49 @@ Attributes:
 | source    | `nil`      | An optional package source path/URL |
 | action    | `:install` | Action(s) to perform                |
 
+***snoopy_config***
+
+The child resource for handling Snoopy's configuration.
+
+Syntax:
+
+    snoopy_config 'default' do
+        config { some_option_key: 'some_option_value' }
+        action :install
+    end
+
+Actions:
+
+| Action    | Description       |
+|-----------|-------------------|
+| `:create` | Render the config |
+| `:remove` | Delete the config |
+
+Attributes:
+
+| Attribute | Default             | Description                       |
+|-----------|---------------------|-----------------------------------|
+| config    | `nil`               | Optional hash of config overrides |
+| action    | `:install`          | Action(s) to perform              |
+
 Providers
 =========
 
 ***Chef::Provider::Snoopy***
 
-The main provider for managing Snoopy.
+The main provider for the parent `snoopy` resource.
+
+***Chef::Provider::SnoopyApp***
+
+Provider to handle installation and removal of the Snoopy packages.
+
+***Chef::Provider::SnoopyConfig***
+
+The child provider for managing Snoopy's configuration.
+
+***Chef::Provider::SnoopyService***
+
+Provider to manage enabling and disabling Snoopy logging.
 
 Contributing
 ============

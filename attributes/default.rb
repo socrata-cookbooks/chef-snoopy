@@ -19,3 +19,4 @@
 #
 
 default['snoopy']['app']['source'] = nil
+default['snoopy']['config'] = nil

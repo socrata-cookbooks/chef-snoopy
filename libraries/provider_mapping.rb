@@ -21,7 +21,17 @@
 require 'chef/version'
 require 'chef/platform/provider_mapping'
 require_relative 'provider_snoopy'
+require_relative 'provider_snoopy_app'
+require_relative 'provider_snoopy_config'
+require_relative 'provider_snoopy_service'
 
 if Gem::Version.new(Chef::VERSION) < Gem::Version.new('12')
-  Chef::Platform.set(resource: :snoopy, provider: Chef::Provider::Snoopy)
+  {
+    snoopy: Chef::Provider::Snoopy,
+    snoopy_app: Chef::Provider::SnoopyApp,
+    snoopy_config: Chef::Provider::SnoopyConfig,
+    snoopy_service: Chef::Provider::SnoopyService
+  }.each do |r, p|
+    Chef::Platform.set(resource: r, provider: p)
+  end
 end

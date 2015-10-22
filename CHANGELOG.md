@@ -4,6 +4,7 @@ Snoopy Cookbook CHANGELOG
 v?.?.? (????-??-??)
 -------------------
 - Switch from the year-old base Ubuntu package to a custom-built version
+- Add ability to manage the config file that newer versions support
 
 v0.1.0 (2015-09-30)
 -------------------

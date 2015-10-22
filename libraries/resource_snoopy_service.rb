@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 #
 # Cookbook Name:: snoopy
-# Library:: matchers
+# Library:: resource_snoopy_service
 #
 # Copyright 2015 Socrata, Inc.
 #
@@ -18,21 +18,17 @@
 # limitations under the License.
 #
 
-if defined?(ChefSpec)
-  [:snoopy, :snoopy_app, :snoopy_config, :snoopy_service].each do |m|
-    ChefSpec.define_matcher(m)
-  end
+require 'chef/resource/lwrp_base'
 
-  {
-    snoopy: [:create, :remove],
-    snoopy_app: [:install, :remove],
-    snoopy_config: [:create, :remove],
-    snoopy_service: [:enable, :disable]
-  }.each do |resource, actions|
-    actions.each do |action|
-      define_method("#{action}_#{resource}") do |name|
-        ChefSpec::Matchers::ResourceMatcher.new(resource, action, name)
-      end
+class Chef
+  class Resource
+    # A Chef resource for the Snoopy service.
+    #
+    # @author Jonathan Hartman <jonathan.hartman@socrata.com>
+    class SnoopyService < LWRPBase
+      self.resource_name = :snoopy_service
+      actions :enable, :disable
+      default_action :enable
     end
   end
 end

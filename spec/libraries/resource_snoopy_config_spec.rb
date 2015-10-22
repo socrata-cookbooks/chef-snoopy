@@ -1,15 +1,15 @@
 # Encoding: UTF-8
 
 require_relative '../spec_helper'
-require_relative '../../libraries/resource_snoopy'
+require_relative '../../libraries/resource_snoopy_config'
 
-describe Chef::Resource::Snoopy do
+describe Chef::Resource::SnoopyConfig do
   let(:name) { 'default' }
   let(:resource) { described_class.new(name, nil) }
 
   describe '#initialize' do
     it 'sets the correct resource name' do
-      expect(resource.resource_name).to eq(:snoopy)
+      expect(resource.resource_name).to eq(:snoopy_config)
     end
 
     it 'sets the correct supported actions' do
@@ -21,41 +21,8 @@ describe Chef::Resource::Snoopy do
     end
   end
 
-  describe '#source' do
-    let(:source) { nil }
-    let(:resource) do
-      r = super()
-      r.source(source) unless source.nil?
-      r
-    end
-
-    context 'no override' do
-      let(:source) { nil }
-
-      it 'defaults to nil' do
-        expect(resource.source).to eq(nil)
-      end
-    end
-
-    context 'a valid override' do
-      let(:source) { 'http://example.com/pkg.pkg' }
-
-      it 'returns the override' do
-        expect(resource.source).to eq(source)
-      end
-    end
-
-    context 'an invalid override' do
-      let(:source) { :thing }
-
-      it 'raises an error' do
-        expect { resource }.to raise_error(Chef::Exceptions::ValidationFailed)
-      end
-    end
-  end
-
   describe '#config' do
-    let(:config) { nil }
+    let(:source) { nil }
     let(:resource) do
       r = super()
       r.config(config) unless config.nil?
@@ -71,7 +38,7 @@ describe Chef::Resource::Snoopy do
     end
 
     context 'a valid override' do
-      let(:config) { { message_format: 'test' } }
+      let(:config) { { key: 'value' } }
 
       it 'returns the override' do
         expect(resource.config).to eq(config)

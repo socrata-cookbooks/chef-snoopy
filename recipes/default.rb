@@ -20,4 +20,5 @@
 
 snoopy 'default' do
   source node['snoopy']['app']['source']
+  config node['snoopy']['config']
 end

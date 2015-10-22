@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 #
 # Cookbook Name:: snoopy
-# Library:: provider_snoopy
+# Library:: provider_snoopy_app
 #
 # Copyright 2015 Socrata, Inc.
 #
@@ -20,19 +20,16 @@
 
 require 'chef/exceptions'
 require 'chef/provider/lwrp_base'
-require_relative 'resource_snoopy_app'
-require_relative 'resource_snoopy_config'
-require_relative 'resource_snoopy_service'
 
 class Chef
   class Provider
-    # A parent Chef provider for the Snoopy app, config, and service.
+    # A Chef provider for the Snoopy Logger application packages.
     #
     # @author Jonathan Hartman <jonathan.hartman@socrata.com>
-    class Snoopy < LWRPBase
+    class SnoopyApp < LWRPBase
       use_inline_resources
 
-      provides :snoopy if defined?(provides)
+      provides :snoopy_app if defined?(provides)
 
       #
       # WhyRun is supported by this provider
@@ -44,21 +41,24 @@ class Chef
       end
 
       #
-      # Install Snoopy, configure it, and enable it.
+      # Install the Snoopy Logger and set it up in the linker config.
       #
-      action :create do
-        snoopy_app(new_resource.name) { source new_resource.source }
-        snoopy_config(new_resource.name) { config new_resource.config }
-        snoopy_service(new_resource.name)
+      action :install do
+        unless new_resource.source
+          packagecloud_repo('socrata-platform/snoopy') { type 'deb' }
+        end
+        package(new_resource.source || 'snoopy')
       end
 
       #
-      # Disable Snoopy logging, delete the config, and remove the package.
+      # Uninstall the Snoopy Logger.
       #
       action :remove do
-        snoopy_service(new_resource.name) { action :disable }
-        snoopy_config(new_resource.name) { action :remove }
-        snoopy_app(new_resource.name) { action :remove }
+        package('snoopy') { action :remove }
+        # For lack of a :remove action in the packagecloud cookbook
+        file('/etc/apt/sources.list.d/socrata-platform_snoopy.list') do
+          action :delete
+        end
       end
     end
   end
