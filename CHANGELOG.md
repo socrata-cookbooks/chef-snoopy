@@ -1,6 +1,9 @@
 Snoopy Cookbook CHANGELOG
 =========================
 
+v?.?.? (????-??-??)
+-------------------
+
 v1.0.0 (2015-10-22)
 -------------------
 - Switch from the year-old base Ubuntu package to a custom-built version
