@@ -29,7 +29,7 @@ class Chef
     class SnoopyApp < LWRPBase
       use_inline_resources
 
-      provides :snoopy_app if defined?(provides)
+      provides(:snoopy_app, platform: 'ubuntu') if defined?(provides)
 
       #
       # WhyRun is supported by this provider

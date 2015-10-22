@@ -32,6 +32,6 @@ if Gem::Version.new(Chef::VERSION) < Gem::Version.new('12')
     snoopy_config: Chef::Provider::SnoopyConfig,
     snoopy_service: Chef::Provider::SnoopyService
   }.each do |r, p|
-    Chef::Platform.set(resource: r, provider: p)
+    Chef::Platform.set(platform: :ubuntu, resource: r, provider: p)
   end
 end
