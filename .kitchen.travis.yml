@@ -1,3 +1,4 @@
 ---
 driver:
-  name: localhost
+  name: docker
+  privileged: true
