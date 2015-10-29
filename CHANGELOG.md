@@ -3,6 +3,8 @@ Snoopy Cookbook CHANGELOG
 
 v?.?.? (????-??-??)
 -------------------
+- Fix issue with `compile_time` method name collisions when using the cookbook
+  in combination with older versions of Chef Sugar
 
 v1.0.1 (2015-10-22)
 -------------------

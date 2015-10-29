@@ -46,7 +46,10 @@ class Chef
       # Render and drop off a snoopy.ini.
       #
       action :create do
-        chef_gem('inifile') { compile_time(false) if defined?(compile_time) }
+        chef_gem('inifile') do
+          Chef::Resource::ChefGem.instance_methods(false)
+            .include?(:compile_time) && compile_time(false)
+        end
         file PATH do
           content lazy {
             require 'inifile'
