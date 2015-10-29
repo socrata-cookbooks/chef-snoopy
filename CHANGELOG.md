@@ -1,6 +1,9 @@
 Snoopy Cookbook CHANGELOG
 =========================
 
+v?.?.? (????-??-??)
+-------------------
+
 v1.0.2 (2015-10-29)
 -------------------
 - Fix issue with `compile_time` method name collisions when using the cookbook
