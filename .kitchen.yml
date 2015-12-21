@@ -6,7 +6,12 @@ provisioner:
   name: chef_zero
 
 platforms:
+  - name: ubuntu-15.10
+    driver:
+      box: boxcutter/ubuntu1510
   - name: ubuntu-14.04
+  - name: ubuntu-12.04
+  - name: ubuntu-10.04
   - name: ubuntu-14.04-chef-11
     driver:
       box: bento/ubuntu-14.04

@@ -20,9 +20,11 @@ in PackageCloud.io.
 Requirements
 ============
 
-This cookbook currently supports Ubuntu only. It intentionally maintains
-backward compatibility with Chef 11, at the expense of some minor additional
-complexity.
+This cookbook is currently compatible with and tested against Ubuntu 10.04,
+12.04, 14.04, and 15.10.
+
+It intentionally maintains backward compatibility with Chef 11, at the expense
+of some minor additional complexity.
 
 Usage
 =====
