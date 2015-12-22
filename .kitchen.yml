@@ -23,7 +23,7 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[snoopy]
+      - recipe[snoopy_test]
   - name: remove
     run_list:
       - recipe[snoopy_test::remove]
