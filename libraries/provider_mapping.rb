@@ -22,13 +22,14 @@ require 'chef/version'
 require 'chef/platform/provider_mapping'
 require_relative 'provider_snoopy'
 require_relative 'provider_snoopy_app'
+require_relative 'provider_snoopy_app_debian'
 require_relative 'provider_snoopy_config'
 require_relative 'provider_snoopy_service'
 
 if Gem::Version.new(Chef::VERSION) < Gem::Version.new('12')
   {
     snoopy: Chef::Provider::Snoopy,
-    snoopy_app: Chef::Provider::SnoopyApp,
+    snoopy_app: Chef::Provider::SnoopyApp::Debian,
     snoopy_config: Chef::Provider::SnoopyConfig,
     snoopy_service: Chef::Provider::SnoopyService
   }.each do |r, p|

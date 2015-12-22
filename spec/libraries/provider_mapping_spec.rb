@@ -67,7 +67,7 @@ describe :provider_mapping do
         load(File.expand_path('../../../libraries/provider_mapping.rb',
                               __FILE__))
         expect(provider).to eq(Chef::Provider::Snoopy)
-        expect(app_provider).to eq(Chef::Provider::SnoopyApp)
+        expect(app_provider).to eq(Chef::Provider::SnoopyApp::Debian)
         expect(config_provider).to eq(Chef::Provider::SnoopyConfig)
         expect(service_provider).to eq(Chef::Provider::SnoopyService)
       end

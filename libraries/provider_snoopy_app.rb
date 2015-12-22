@@ -23,13 +23,12 @@ require 'chef/provider/lwrp_base'
 
 class Chef
   class Provider
-    # A Chef provider for the Snoopy Logger application packages.
+    # A parent Chef provider for the Snoopy app for platform-specific providers
+    # to inherit from.
     #
     # @author Jonathan Hartman <jonathan.hartman@socrata.com>
     class SnoopyApp < LWRPBase
       use_inline_resources
-
-      provides(:snoopy_app, platform: 'ubuntu') if defined?(provides)
 
       #
       # WhyRun is supported by this provider
@@ -41,24 +40,33 @@ class Chef
       end
 
       #
-      # Install the Snoopy Logger and set it up in the linker config.
+      # Set up an install action.
       #
       action :install do
-        unless new_resource.source
-          packagecloud_repo('socrata-platform/snoopy') { type 'deb' }
-        end
+        install!
+      end
+
+      #
+      # Set up a :remove action.
+      #
+      action :remove do
+        remove!
+      end
+
+      private
+
+      #
+      # Install the Snoopy Logger.
+      #
+      def install!
         package(new_resource.source || 'snoopy')
       end
 
       #
       # Uninstall the Snoopy Logger.
       #
-      action :remove do
+      def remove!
         package('snoopy') { action :remove }
-        # For lack of a :remove action in the packagecloud cookbook
-        file('/etc/apt/sources.list.d/socrata-platform_snoopy.list') do
-          action :delete
-        end
       end
     end
   end
