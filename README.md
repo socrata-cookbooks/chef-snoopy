@@ -21,7 +21,7 @@ Requirements
 ============
 
 This cookbook is currently compatible with and tested against Ubuntu 10.04,
-12.04, 14.04, and 15.10.
+12.04, 14.04, and 15.10; and RHEL (or CentOS, etc.) 7 and 6.
 
 It intentionally maintains backward compatibility with Chef 11, at the expense
 of some minor additional complexity.

@@ -23,16 +23,25 @@ require 'chef/platform/provider_mapping'
 require_relative 'provider_snoopy'
 require_relative 'provider_snoopy_app'
 require_relative 'provider_snoopy_app_debian'
+require_relative 'provider_snoopy_app_rhel'
 require_relative 'provider_snoopy_config'
 require_relative 'provider_snoopy_service'
 
 if Gem::Version.new(Chef::VERSION) < Gem::Version.new('12')
   {
+    ubuntu: Chef::Provider::SnoopyApp::Debian,
+    debian: Chef::Provider::SnoopyApp::Debian,
+    redhat: Chef::Provider::SnoopyApp::Rhel,
+    centos: Chef::Provider::SnoopyApp::Rhel,
+    scientific: Chef::Provider::SnoopyApp::Rhel
+  }.each do |f, p|
+    Chef::Platform.set(platform: f, resource: :snoopy_app, provider: p)
+  end
+  {
     snoopy: Chef::Provider::Snoopy,
-    snoopy_app: Chef::Provider::SnoopyApp::Debian,
     snoopy_config: Chef::Provider::SnoopyConfig,
     snoopy_service: Chef::Provider::SnoopyService
   }.each do |r, p|
-    Chef::Platform.set(platform: :ubuntu, resource: r, provider: p)
+    Chef::Platform.set(resource: r, provider: p)
   end
 end

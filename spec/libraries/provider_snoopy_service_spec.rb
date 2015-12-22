@@ -22,6 +22,14 @@ describe Chef::Provider::SnoopyService do
         expect(res).to eq(true)
       end
     end
+
+    context 'CentOS' do
+      let(:platform) { { platform: 'centos', version: '7.0' } }
+
+      it 'returns true' do
+        expect(res).to eq(true)
+      end
+    end
   end
 
   describe '#whyrun_supported?' do

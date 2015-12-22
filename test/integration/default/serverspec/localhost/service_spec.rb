@@ -9,7 +9,13 @@ describe 'snoopy::default::service' do
     end
   end
 
-  describe file('/var/log/auth.log') do
+  log = case os[:family]
+        when 'ubuntu', 'debian'
+          '/var/log/auth.log'
+        when 'redhat'
+          '/var/log/secure'
+        end
+  describe file(log) do
     it 'is logging system commands' do
       `ls`
       expect(subject.content).to match(%r{snoopy.*filename:/bin/ls})

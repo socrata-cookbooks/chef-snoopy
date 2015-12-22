@@ -1,10 +1,10 @@
 # Encoding: UTF-8
 
 require_relative '../spec_helper'
-require_relative '../../libraries/provider_snoopy_app_debian'
+require_relative '../../libraries/provider_snoopy_app_rhel'
 require_relative '../../libraries/resource_snoopy_app'
 
-describe Chef::Provider::SnoopyApp::Debian do
+describe Chef::Provider::SnoopyApp::Rhel do
   let(:name) { 'default' }
   let(:run_context) { ChefSpec::SoloRunner.new.converge.run_context }
   let(:new_resource) { Chef::Resource::SnoopyApp.new(name, run_context) }
@@ -15,16 +15,16 @@ describe Chef::Provider::SnoopyApp::Debian do
     let(:node) { ChefSpec::Macros.stub_node('node.example', platform) }
     let(:res) { described_class.provides?(node, new_resource) }
 
-    context 'Ubuntu' do
-      let(:platform) { { platform: 'ubuntu', version: '14.04' } }
+    context 'CentOS' do
+      let(:platform) { { platform: 'centos', version: '7.0' } }
 
       it 'returns true' do
         expect(res).to eq(true)
       end
     end
 
-    context 'CentOS' do
-      let(:platform) { { platform: 'centos', version: '7.0' } }
+    context 'Ubuntu' do
+      let(:platform) { { platform: 'ubuntu', version: '14.04' } }
 
       it 'returns false' do
         expect(res).to eq(false)
@@ -53,7 +53,7 @@ describe Chef::Provider::SnoopyApp::Debian do
         p = provider
         expect(p).to receive(:packagecloud_repo).with('socrata-platform/snoopy')
           .and_yield
-        expect(p).to receive(:type).with('deb')
+        expect(p).to receive(:type).with('rpm')
         p.send(:install!)
       end
 
@@ -98,7 +98,7 @@ describe Chef::Provider::SnoopyApp::Debian do
     it 'deletes the Snoopy repository config' do
       p = provider
       allow(p).to receive(:file).and_call_original
-      f = '/etc/apt/sources.list.d/socrata-platform_snoopy.list'
+      f = '/etc/yum.repos.d/socrata-platform_snoopy.repo'
       expect(p).to receive(:file).with(f).and_yield
       expect(p).to receive(:action).with(:delete)
       p.send(:remove!)

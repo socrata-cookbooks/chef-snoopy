@@ -73,4 +73,30 @@ describe :provider_mapping do
       end
     end
   end
+
+  context 'CentOS' do
+    let(:platform) { { platform: 'CentOS', version: '7.0' } }
+
+    context 'Chef 12' do
+      let(:chef_version) { '12.4.1' }
+
+      it_behaves_like 'Chef 12'
+    end
+
+    context 'Chef 11' do
+      let(:chef_version) { '11.16.4' }
+
+      it 'sets up old-style provider mappings' do
+        allow(Chef::Log).to receive(:warn)
+        expect(Chef::Platform).to receive(:set).at_least(1).times
+          .and_call_original
+        load(File.expand_path('../../../libraries/provider_mapping.rb',
+                              __FILE__))
+        expect(provider).to eq(Chef::Provider::Snoopy)
+        expect(app_provider).to eq(Chef::Provider::SnoopyApp::Rhel)
+        expect(config_provider).to eq(Chef::Provider::SnoopyConfig)
+        expect(service_provider).to eq(Chef::Provider::SnoopyService)
+      end
+    end
+  end
 end
