@@ -7,5 +7,9 @@ describe 'snoopy::default::app' do
     it 'is installed' do
       expect(subject).to be_installed
     end
+
+    it 'is a recent version' do
+      expect(subject.version.version.to_i).to be > 1
+    end
   end
 end
