@@ -12,4 +12,7 @@ version          '1.0.3'
 depends          'packagecloud'
 
 supports         'ubuntu'
+supports         'redhat'
+supports         'centos'
+supports         'scientific'
 # rubocop:enable SingleSpaceBeforeFirstArg

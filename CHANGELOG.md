@@ -3,6 +3,8 @@ Snoopy Cookbook CHANGELOG
 
 v?.?.? (????-??-??)
 -------------------
+- Start testing against Ubuntus 15.10 and 10.04
+- Add RHEL and RHEL-alike support
 
 v1.0.2 (2015-10-29)
 -------------------

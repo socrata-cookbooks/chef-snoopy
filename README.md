@@ -1,14 +1,14 @@
 Snoopy Cookbook
 ===============
 [![Cookbook Version](https://img.shields.io/cookbook/v/snoopy.svg)][cookbook]
-[![Build Status](https://img.shields.io/travis/socrata-cookbooks/chef-snoopy.svg)][travis]
-[![Code Climate](https://img.shields.io/codeclimate/github/socrata-cookbooks/chef-snoopy.svg)][codeclimate]
-[![Coverage Status](https://img.shields.io/coveralls/socrata-cookbooks/chef-snoopy.svg)][coveralls]
+[![Build Status](https://img.shields.io/travis/socrata-cookbooks/snoopy.svg)][travis]
+[![Code Climate](https://img.shields.io/codeclimate/github/socrata-cookbooks/snoopy.svg)][codeclimate]
+[![Coverage Status](https://img.shields.io/coveralls/socrata-cookbooks/snoopy.svg)][coveralls]
 
 [cookbook]: https://supermarket.chef.io/cookbooks/snoopy
-[travis]: https://travis-ci.org/socrata-cookbooks/chef-snoopy
-[codeclimate]: https://codeclimate.com/github/socrata-cookbooks/chef-snoopy
-[coveralls]: https://coveralls.io/r/socrata-cookbooks/chef-snoopy
+[travis]: https://travis-ci.org/socrata-cookbooks/snoopy
+[codeclimate]: https://codeclimate.com/github/socrata-cookbooks/snoopy
+[coveralls]: https://coveralls.io/r/socrata-cookbooks/snoopy
 
 A Chef cookbook for [Snoopy Logger](https://github.com/a2o/snoopy).
 
@@ -20,9 +20,11 @@ in PackageCloud.io.
 Requirements
 ============
 
-This cookbook currently supports Ubuntu only. It intentionally maintains
-backward compatibility with Chef 11, at the expense of some minor additional
-complexity.
+This cookbook is currently compatible with and tested against Ubuntu 10.04,
+12.04, 14.04, and 15.10; and RHEL (or CentOS, etc.) 7 and 6.
+
+It intentionally maintains backward compatibility with Chef 11, at the expense
+of some minor additional complexity.
 
 Usage
 =====

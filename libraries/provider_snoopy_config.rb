@@ -31,7 +31,7 @@ class Chef
 
       use_inline_resources
 
-      provides(:snoopy_config, platform: 'ubuntu') if defined?(provides)
+      provides(:snoopy_config) if defined?(provides)
 
       #
       # WhyRun is supported by this provider
