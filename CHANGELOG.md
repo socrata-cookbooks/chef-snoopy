@@ -1,6 +1,9 @@
 Snoopy Cookbook CHANGELOG
 =========================
 
+v?.?.? (????-??-??)
+-------------------
+
 v1.1.0 (2015-12-23)
 -------------------
 - Start testing against Ubuntus 15.10 and 10.04
