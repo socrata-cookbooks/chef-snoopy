@@ -134,6 +134,29 @@ Attributes:
 | config    | `nil`               | Optional hash of config overrides |
 | action    | `:install`          | Action(s) to perform              |
 
+***snoopy_service***
+
+The child resource for handling enabling and disabling Snoopy via LD_PRELOAD.
+
+Syntax:
+
+    snoopy_service 'default' do
+        action :enable
+    end
+
+Actions:
+
+| Action     | Description    |
+|------------|----------------|
+| `:enable`  | Enable Snoopy  |
+| `:disable` | Disable Snoopy |
+
+Attributes:
+
+| Attribute | Default   | Description          |
+|-----------|-----------|----------------------|
+| action    | `:enable` | Action(s) to perform |
+
 Providers
 =========
 
@@ -143,15 +166,23 @@ The main provider for the parent `snoopy` resource.
 
 ***Chef::Provider::SnoopyApp***
 
-Provider to handle installation and removal of the Snoopy packages.
+Provider with shared, platform-agnostic package management logic.
+
+***Chef::Provider::SnoopyApp::Debian***
+
+Ubuntu implementation of `Chef::Provider::SnoopyApp`.
+
+***Chef::Provider::SnoopyApp::Rhel***
+
+RHEL (and RHEL-alike) implementation of `Chef::Provider::SnoopyApp`.
 
 ***Chef::Provider::SnoopyConfig***
 
-The child provider for managing Snoopy's configuration.
+The platform-agnostic provider for managing Snoopy's configuration.
 
 ***Chef::Provider::SnoopyService***
 
-Provider to manage enabling and disabling Snoopy logging.
+The platform-agnostic provider for enable and disabling Snoopy logging.
 
 Contributing
 ============
