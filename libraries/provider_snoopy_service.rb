@@ -76,7 +76,7 @@ class Chef
         when :remove
           libs.delete_if { |l| l == '/lib/libsnoopy.so' }.join("\n")
         else
-          fail(Chef::Exceptions::UnsupportedAction, do_action)
+          raise(Chef::Exceptions::UnsupportedAction, do_action)
         end
       end
     end

@@ -27,7 +27,7 @@ class Chef
     #
     # @author Jonathan Hartman <jonathan.hartman@socrata.com>
     class SnoopyConfig < LWRPBase
-      PATH ||= '/etc/snoopy.ini'
+      PATH ||= '/etc/snoopy.ini'.freeze
 
       use_inline_resources
 
@@ -47,7 +47,8 @@ class Chef
       #
       action :create do
         chef_gem('inifile') do
-          Chef::Resource::ChefGem.instance_methods(false)
+          Chef::Resource::ChefGem
+            .instance_methods(false)
             .include?(:compile_time) && compile_time(false)
         end
         file PATH do
