@@ -17,7 +17,8 @@ describe 'snoopy::default' do
     end
 
     it 'configures Snoopy with no overrides' do
-      expect(chef_run).to create_snoopy('default').with(config: {})
+      expect(chef_run).to create_snoopy('default')
+        .with(enabled: true, config: {})
     end
   end
 
@@ -35,6 +36,14 @@ describe 'snoopy::default' do
     it 'configures Snoopy with the custom config' do
       expect(chef_run).to create_snoopy('default')
         .with(config: { 'message_format' => 'test' })
+    end
+  end
+
+  context 'a custom enabled attribute' do
+    let(:overrides) { { snoopy: { service: { enabled: false } } } }
+
+    it 'configures Snoopy with the service disabled' do
+      expect(chef_run).to create_snoopy('default').with(enabled: false)
     end
   end
 end

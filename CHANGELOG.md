@@ -1,8 +1,9 @@
 Snoopy Cookbook CHANGELOG
 =========================
 
-v?.?.? (????-??-??)
--------------------
+Unreleased
+----------
+- Expose an attribute that can be overridden to leave Snoopy disabled
 
 v1.1.0 (2015-12-23)
 -------------------

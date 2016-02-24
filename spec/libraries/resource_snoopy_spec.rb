@@ -54,6 +54,39 @@ describe Chef::Resource::Snoopy do
     end
   end
 
+  describe '#enabled' do
+    let(:enabled) { nil }
+    let(:resource) do
+      r = super()
+      r.enabled(enabled) unless enabled.nil?
+      r
+    end
+
+    context 'no override' do
+      let(:enabled) { nil }
+
+      it 'defaults to true' do
+        expect(resource.enabled).to eq(true)
+      end
+    end
+
+    context 'a valid override' do
+      let(:enabled) { false }
+
+      it 'returns the override' do
+        expect(resource.enabled).to eq(false)
+      end
+    end
+
+    context 'an invalid override' do
+      let(:enabled) { :thing }
+
+      it 'raises an error' do
+        expect { resource }.to raise_error(Chef::Exceptions::ValidationFailed)
+      end
+    end
+  end
+
   describe '#config' do
     let(:config) { nil }
     let(:resource) do

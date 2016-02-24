@@ -36,6 +36,11 @@ class Chef
       attribute :source, kind_of: String, default: nil
 
       #
+      # Attribute to allow enabling/disabling of the Snoopy service.
+      #
+      attribute :enabled, kind_of: [TrueClass, FalseClass], default: true
+
+      #
       # Attribute to allow a set of configuration overrides.
       #
       attribute :config, kind_of: Hash, default: nil

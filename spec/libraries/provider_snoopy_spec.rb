@@ -6,13 +6,13 @@ require_relative '../../libraries/resource_snoopy'
 
 describe Chef::Provider::Snoopy do
   let(:name) { 'default' }
-  let(:source) { nil }
-  let(:config) { nil }
+  %i(source enabled config).each { |i| let(i) { nil } }
   let(:run_context) { ChefSpec::SoloRunner.new.converge.run_context }
   let(:new_resource) do
     r = Chef::Resource::Snoopy.new(name, run_context)
-    r.source(source) unless source.nil?
-    r.config(config) unless config.nil?
+    %i(source enabled config).each do |i|
+      r.send(i, send(i)) unless send(i).nil?
+    end
     r
   end
   let(:provider) { described_class.new(new_resource, run_context) }
@@ -59,9 +59,14 @@ describe Chef::Provider::Snoopy do
         p.action_create
       end
 
-      it 'enables Snoopy' do
+      it 'performs the correct service action' do
         p = provider
-        expect(p).to receive(:snoopy_service).with(name)
+        expect(p).to receive(:snoopy_service).with(name).and_yield
+        if enabled == false
+          expect(p).to receive(:action).with(:disable)
+        else
+          expect(p).to_not receive(:action)
+        end
         p.action_create
       end
     end
@@ -72,6 +77,12 @@ describe Chef::Provider::Snoopy do
 
     context 'a source attribute' do
       let(:source) { 'http://example.com/snoopy.pkg' }
+
+      it_behaves_like 'any attribute set'
+    end
+
+    context 'an enabled attribute' do
+      let(:enabled) { false }
 
       it_behaves_like 'any attribute set'
     end

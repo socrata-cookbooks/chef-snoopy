@@ -49,7 +49,9 @@ class Chef
       action :create do
         snoopy_app(new_resource.name) { source new_resource.source }
         snoopy_config(new_resource.name) { config new_resource.config }
-        snoopy_service(new_resource.name)
+        snoopy_service new_resource.name do
+          action :disable unless new_resource.enabled
+        end
       end
 
       #

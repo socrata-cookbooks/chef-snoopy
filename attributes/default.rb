@@ -19,4 +19,5 @@
 #
 
 default['snoopy']['app']['source'] = nil
+default['snoopy']['service']['enabled'] = true
 default['snoopy']['config'] = {}

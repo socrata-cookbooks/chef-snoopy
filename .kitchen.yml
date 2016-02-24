@@ -24,6 +24,13 @@ suites:
   - name: default
     run_list:
       - recipe[snoopy_test]
+  - name: disabled
+    run_list:
+      - recipe[snoopy_test]
+    attributes:
+      snoopy:
+        service:
+          enabled: false
   - name: remove
     run_list:
       - recipe[snoopy_test::remove]

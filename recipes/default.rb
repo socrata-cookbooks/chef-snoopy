@@ -19,9 +19,9 @@
 #
 
 src = node['snoopy']['app']['source']
-conf = node['snoopy']['config']
 
 snoopy 'default' do
   source src unless src.nil?
-  config conf
+  enabled node['snoopy']['service']['enabled']
+  config node['snoopy']['config']
 end
