@@ -1,6 +1,5 @@
 # Encoding: UTF-8
-#
-# rubocop:disable SingleSpaceBeforeFirstArg
+
 name             'snoopy'
 maintainer       'Jonathan Hartman'
 maintainer_email 'jonathan.hartman@socrata.com'
@@ -15,4 +14,3 @@ supports         'ubuntu'
 supports         'redhat'
 supports         'centos'
 supports         'scientific'
-# rubocop:enable SingleSpaceBeforeFirstArg

@@ -49,6 +49,10 @@ Attributes
 
 An optional custom file path or URL to a Snoopy package to install.
 
+    default['snoopy']['service']['enabled'] = true
+
+Can be overridden to leave Snoopy installed but not running.
+
     default['snoopy']['config'] = nil
 
 An optional hash of config overrides, in underscore format, to pass into
